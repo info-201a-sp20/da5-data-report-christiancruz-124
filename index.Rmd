@@ -1,0 +1,22 @@
+---
+title: "Assignment 5 Data Report"
+output: html_document
+---
+
+``` {r setup, include = FALSE, echo = FALSE}
+source("analysis.R")
+
+library(knitr)
+```
+
+# Mass shootings in 2018: a data report
+
+Gun violence has quickly become one of the most prominent issues in the US
+over the past decade.
+
+``` {r link, echo = FALSE}
+link_markdown <- "[2018 report](https://www.gunviolencearchive.org/reports/mass-shooting)"
+```
+
+According to the Gun Violence Archive's `r link_markdown`, there were a total of `r n_shootings`
+incidents. The shootings caused a total of `r lives_lost` lives lost. The city that was most impacted in 2018 was `r most_impacted_city`.
