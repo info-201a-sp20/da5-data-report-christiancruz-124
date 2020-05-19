@@ -19,4 +19,5 @@ link_markdown <- "[2018 report](https://www.gunviolencearchive.org/reports/mass-
 ```
 
 According to the Gun Violence Archive's `r link_markdown`, there were a total of `r n_shootings`
-incidents. The shootings caused a total of `r lives_lost` lives lost. The city that was most impacted in 2018 was `r most_impacted_city`.
+incidents. The shootings caused a total of `r lives_lost` lives lost. The city that was most impacted in 2018 was `r most_impacted_city`.  
+
