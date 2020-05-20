@@ -15,9 +15,101 @@ Gun violence has quickly become one of the most prominent issues in the US
 over the past decade.
 
 ``` {r link, echo = FALSE}
-link_markdown <- "[2018 report](https://www.gunviolencearchive.org/reports/mass-shooting)"
+l1_markdown <- "[2018 report](https://www.gunviolencearchive.org/reports/mass-shooting)"
 ```
 
-According to the Gun Violence Archive's `r link_markdown`, there were a total of `r n_shootings`
-incidents. The shootings caused a total of `r lives_lost` lives lost. The city that was most impacted in 2018 was `r most_impacted_city`.  
+According to the Gun Violence Archive's (GVA) `r l1_markdown`, there were a 
+total of `r sum_shootings` reported incidents. The shootings caused a total of
+`r sum_lost` lives lost. The city that was most impacted by shootings in 2018
+was `r sum_city` (impact is analyzed by the amount of lives lost in shootings,
+however, it is respectfully recognized that some reports may calculate impact by
+injuries). The state that was most impacted by shootings in 2018 was 
+`r sum_state`. It was also found that the month with the most reported shootings
+was `r sum_month`.
+
+`r table_df`
+
+## Many mass shootings means many unfortunate victims
+
+On `r spfc_date`, a shooting occured in `r city_state`. This incident - that
+happened at `r spfc_address` - would become one of the most prominent shootings
+of the year, totalling up to `r spfc_injr` and `r spfc_lost`. These 
+`r spfc_injr + spfc_lost` victims were the result of the worst shooting that 
+year according to the amount of reported injuries. The shooting was one of
+`r spfc_in_month` shootings that happened in `r spfc_city` that month.
+
+``` {r link, echo = FALSE}
+l2_markdown <- "[here](https://www.nytimes.com/2018/06/17/nyregion/trenton-mass-shooting.html)"
+```
+
+A link to the report on the shooting incident can be found `r l2_markdown`
+(note that data from this report might differ slightly from the given link).
+
+## Incident map
+
+The map below represents the shooting locations according to the 2018 GVA
+report. The size of the cirle represents the number of victims during the
+incident relative to other incidents.
+
+``` {r map, echo = FALSE}
+library(leaflet)
+library(htmltools)
+
+# map of data
+leaflet(data = shootings) %>%
+  addProviderTiles("CartoDB.Positron") %>%
+  addCircles(
+    lat = ~lat,
+    lng = ~long,
+    radius = ~ num_killed * 5000,
+    stroke = FALSE,
+    label = lapply(labels, htmltools::HTML) # label uses html tools to convert
+                                            # char vector 'labels' to HTML
+  )
+```
+
+As seen from a geographical view, the majority of the larger mass shootings of
+2018 hapened on the east coast, with a very dense incident reports in the 
+Maryland/New Jersey/Pennsylvania area. The largest concentration of incident reports on the
+west coast are seen in the LA area. However, if we take a look at the same data
+from a different angle, we see a very different story.
+
+## Analysis by state
+
+As seen above, states saw varying levels of activity in 2018. The states that
+experienced mass shootings had differing numbers of victims, and of those
+victims, had differing ratios of casualties to injuries. However, the
+geographical perspective was less effective at showing how areas with high
+concentration of shooting reports were really effected.
+
+``` {r bar plot, echo = FALSE}
+library(ggplot2)
+
+ggplot(data = by_state, aes(x = reorder(state, total), y = total, fill = victim_type)) +
+  geom_col() +
+  labs(title = "Shooting victims per state (2018)", x = "State", y = "Total victims") +
+  scale_fill_brewer(name = "Victim types",
+                    labels = c("Injured", "Killed"),
+                    palette = "Set1",
+                    direction = -1) +
+  coord_flip()
+  
+
+```
+
+A horizontal bar chart was chosen to reflect the number of victims in each 
+state. Notice that the chart is also stacked with both number of injuries
+and deaths for each state. This allows viewers to more easily compare the
+number of victims to each state than the map above. For example, the map shows
+a high concentration of dots in the north eastern area of the US, however, it's
+obvious according to the bar chart that both California and Florida had the 
+most victims. Note: this may not necessarily mean that there were more 
+shootings in those states than the north eastern states; another chart should
+be made to explicitly compare shooting incident density. Although, the map may
+not have been extremely effective, it still managed to depict some of the data
+correctly. Pennsylvania, a north eastern state, had the most victims per state
+of those under 100 victims.
+
+
+
 
