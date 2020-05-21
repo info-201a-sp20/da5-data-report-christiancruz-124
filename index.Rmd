@@ -145,6 +145,6 @@ not have been extremely effective, it still managed to depict some of the data
 correctly. Pennsylvania, a north eastern state, had the most victims per state
 of those under 100 victims.
 
+By Christian Cruz
 
-
-
+INFO 201 SPRING 2020
