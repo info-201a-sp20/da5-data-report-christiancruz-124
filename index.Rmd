@@ -14,8 +14,9 @@ library(knitr)
 Gun violence has quickly become one of the most prominent issues in the US
 over the past decade.
 
-``` {r link, echo = FALSE}
-l1_markdown <- "[2018 report](https://www.gunviolencearchive.org/reports/mass-shooting)"
+``` {r link1, echo = FALSE}
+l1_markdown <-
+  "[2018 report](https://www.gunviolencearchive.org/reports/mass-shooting)"
 ```
 
 According to the Gun Violence Archive's (GVA) `r l1_markdown`, there were a 
@@ -27,19 +28,43 @@ injuries). The state that was most impacted by shootings in 2018 was
 `r sum_state`. It was also found that the month with the most reported shootings
 was `r sum_month`.
 
-`r table_df`
+## Summary of GVA 2018 Shooting Data
+
+``` {r echo = FALSE}
+kable(table_df,
+  col.names = c(
+    "State",
+    "Total Victims",
+    "Deaths",
+    "Injuries",
+    "Death Percentage",
+    "Injury Percentage"
+  ),
+  align = "r"
+)
+```
+
+Many of the state injury to death ratios favor injuries, but there still are
+some states that show the opposite where there are more deaths than injuries.
+However, it should be noted that these states usually have lower victim totals,
+indicating that there could be a positive correlation between total victims and
+the ratio of injuries to deaths.
 
 ## Many mass shootings means many unfortunate victims
 
-On `r spfc_date`, a shooting occured in `r city_state`. This incident - that
+On `r spfc_date`, a shooting occurred in `r spfc_city_state`. This incident - that
 happened at `r spfc_address` - would become one of the most prominent shootings
-of the year, totalling up to `r spfc_injr` and `r spfc_lost`. These 
+of the year, totaling up to `r spfc_injr` and `r spfc_lost`. These 
 `r spfc_injr + spfc_lost` victims were the result of the worst shooting that 
 year according to the amount of reported injuries. The shooting was one of
 `r spfc_in_month` shootings that happened in `r spfc_city` that month.
 
-``` {r link, echo = FALSE}
-l2_markdown <- "[here](https://www.nytimes.com/2018/06/17/nyregion/trenton-mass-shooting.html)"
+``` {r link2, echo = FALSE}
+l2_markdown <- paste0(
+  "[here]",
+  "(https://www.nytimes.com/2018/06/17/nyregion/",
+  "trenton-mass-shooting.html)"
+)
 ```
 
 A link to the report on the shooting incident can be found `r l2_markdown`
@@ -48,7 +73,7 @@ A link to the report on the shooting incident can be found `r l2_markdown`
 ## Incident map
 
 The map below represents the shooting locations according to the 2018 GVA
-report. The size of the cirle represents the number of victims during the
+report. The size of the circle represents the number of victims during the
 incident relative to other incidents.
 
 ``` {r map, echo = FALSE}
@@ -64,15 +89,16 @@ leaflet(data = shootings) %>%
     radius = ~ num_killed * 5000,
     stroke = FALSE,
     label = lapply(labels, htmltools::HTML) # label uses html tools to convert
-                                            # char vector 'labels' to HTML
+    # char vector 'labels' to HTML
   )
 ```
 
 As seen from a geographical view, the majority of the larger mass shootings of
-2018 hapened on the east coast, with a very dense incident reports in the 
-Maryland/New Jersey/Pennsylvania area. The largest concentration of incident reports on the
-west coast are seen in the LA area. However, if we take a look at the same data
-from a different angle, we see a very different story.
+2018 happened on the east coast, with a very concentrated amount of incident 
+reports in the Maryland/New Jersey/Pennsylvania area. The largest concentration
+of incident reports on the west coast are seen in the LA area. However, if we 
+take a look at the same data from a different angle, we see a very different 
+story.
 
 ## Analysis by state
 
@@ -85,16 +111,24 @@ concentration of shooting reports were really effected.
 ``` {r bar plot, echo = FALSE}
 library(ggplot2)
 
-ggplot(data = by_state, aes(x = reorder(state, total), y = total, fill = victim_type)) +
+ggplot(data = by_state, aes(
+  x = reorder(state, total),
+  y = total,
+  fill = victim_type
+)) +
   geom_col() +
-  labs(title = "Shooting victims per state (2018)", x = "State", y = "Total victims") +
-  scale_fill_brewer(name = "Victim types",
-                    labels = c("Injured", "Killed"),
-                    palette = "Set1",
-                    direction = -1) +
+  labs(
+    title = "Shooting victims per state (2018)",
+    x = "State",
+    y = "Total victims"
+  ) +
+  scale_fill_brewer(
+    name = "Victim types",
+    labels = c("Injuries", "Deaths"),
+    palette = "Set1",
+    direction = -1
+  ) +
   coord_flip()
-  
-
 ```
 
 A horizontal bar chart was chosen to reflect the number of victims in each 

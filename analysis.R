@@ -1,14 +1,12 @@
 # -------------------------------- set up -------------------------------------
 library(tidyverse)
-library(leaflet)
-library(htmltools)
 
 raw <- read.csv("data/shootings-2018.csv", stringsAsFactors = FALSE)
 
 shootings <- raw %>%
   mutate(city_state = paste0(city, ", ", state)) %>%
-  mutate(month = substr(date, 1, str_locate(date, " ") - 1)) %>% 
-  mutate(total_victims = num_killed  + num_injured)
+  mutate(month = substr(date, 1, str_locate(date, " ") - 1)) %>%
+  mutate(total_victims = num_killed + num_injured)
 
 # -------------------------- summary paragraph --------------------------------
 
@@ -38,14 +36,15 @@ sum_month <- shootings %>%
 
 # -------------------------------- table --------------------------------------
 
-table_df <- shootings %>% 
-  group_by(state) %>% 
-  summarize(tot_killed = sum(num_killed),
-            tot_injured = sum(num_injured),
-            tot_victims = sum(total_victims),
-            perc_killed = tot_killed / tot_victims * 100,
-            perc_injured = tot_injured / tot_victims * 100
-            )
+table_df <- shootings %>%
+  group_by(state) %>%
+  summarize(
+    tot_victims = sum(total_victims),
+    tot_killed = sum(num_killed),
+    tot_injured = sum(num_injured),
+    perc_killed = round(tot_killed / tot_victims * 100, digits = 0),
+    perc_injured = round(tot_injured / tot_victims * 100, digits = 0)
+  )
 
 # ------------------------- specific incident ---------------------------------
 # Incident chosen: the Trenton, NJ incident on June 17, 2018
@@ -89,39 +88,16 @@ spfc_in_month <- shootings %>%
 labels <- lapply(seq(nrow(shootings)), function(x) {
   paste0(
     "<p>Address: ", shootings[x, "address"], "</p>",
-    "<p>Killed: ", shootings[x, "num_killed"], "</p>",
-    "<p>Injured: ", shootings[x, "num_injured"], "</p>"
+    "<p>Deaths: ", shootings[x, "num_killed"], "</p>",
+    "<p>Injuries: ", shootings[x, "num_injured"], "</p>"
   )
 })
-
 
 # ------------------------------ choice plot ----------------------------------
 
 # dataframe containing killed/injured ratio for each state
 by_state <- shootings %>%
-  select(state, num_killed, num_injured) %>% 
-  gather(key = victim_type, value = total, -state) %>% 
-  group_by(state, victim_type) %>% 
+  select(state, num_killed, num_injured) %>%
+  gather(key = victim_type, value = total, -state) %>%
+  group_by(state, victim_type) %>%
   summarize(total = sum(total))
-  
-
-ggplot(data = by_state, aes(x = reorder(state, total),
-                            y = total,
-                            fill = victim_type)
-       ) +
-  geom_col() +
-  labs(x = "State", y = "Total victims") +
-  scale_fill_brewer(name = "Victim types",
-                    labels = c("Injured", "Killed"),
-                    palette = "Set1",
-                    direction = -1) +
-  coord_flip()
-
-
-
-
-
-
-
-
-
