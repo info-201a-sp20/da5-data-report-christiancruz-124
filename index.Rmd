@@ -88,8 +88,9 @@ leaflet(data = shootings) %>%
     lng = ~long,
     radius = ~ num_killed * 5000,
     stroke = FALSE,
-    label = lapply(labels, htmltools::HTML) # label uses html tools to convert
-    # char vector 'labels' to HTML
+    
+    # uses label vector in labels df to create hover popup
+    label = lapply(pull(select(labels, label)), htmltools::HTML)
   )
 ```
 

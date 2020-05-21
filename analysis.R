@@ -83,15 +83,17 @@ spfc_in_month <- shootings %>%
 
 # ----------------------------- interactive map -------------------------------
 
-# char vector for use in 'index.Rmd'. Map will use this for converting to HTML
-# for labels
-labels <- lapply(seq(nrow(shootings)), function(x) {
+# function to create label
+label_maker <- function(row) {
   paste0(
-    "<p>Address: ", shootings[x, "address"], "</p>",
-    "<p>Deaths: ", shootings[x, "num_killed"], "</p>",
-    "<p>Injuries: ", shootings[x, "num_injured"], "</p>"
+    "<p>Address: ", pull(select(row, address)), "</p>",
+    "<p>Deaths: ", pull(select(row, num_killed)), "</p>",
+    "<p>Injuries: ", pull(select(row, num_injured)), "</p>"
   )
-})
+}
+
+labels <- shootings %>% 
+  mutate(label = label_maker(shootings))
 
 # ------------------------------ choice plot ----------------------------------
 
